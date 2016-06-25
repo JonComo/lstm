@@ -2,7 +2,7 @@ import numpy as np
 
 # building blocks
 def weights(shape):
-    return np.random.random_sample(shape) * .2 - .1
+    return np.random.random_sample(shape) * 2.0 - 1.0
 
 def m(a, b):
     return np.multiply(a, b)
@@ -90,22 +90,21 @@ class LSTM(object):
         self.d19 = d17[0, 0:self.h0.shape[1]]
 
 class LSTMNetwork(object):
-    def __init__(self, x_dim, h_dim, y_dim, c_dim, time_steps, act, act_p):
-        print('LSTM Network version 0.2')
+    def __init__(self, x_dim, h_dim, y_dim, time_steps, act, act_p):
+        print('LSTM Network version 0.3')
 
         self.x_dim = x_dim
         self.h_dim = h_dim
-        self.c_dim = c_dim
         self.time_steps = time_steps
 
         self.hxb_dim = h_dim + x_dim + 1
 
         # initialize weights
         self.W = {}
-        self.W['f'] = weights([self.hxb_dim, c_dim])
-        self.W['i'] = weights([self.hxb_dim, c_dim])
-        self.W['c'] = weights([self.hxb_dim, c_dim])
-        self.W['o'] = weights([self.hxb_dim, c_dim])
+        self.W['f'] = weights([self.hxb_dim, self.h_dim])
+        self.W['i'] = weights([self.hxb_dim, self.h_dim])
+        self.W['c'] = weights([self.hxb_dim, self.h_dim])
+        self.W['o'] = weights([self.hxb_dim, self.h_dim])
 
         self.W['y'] = weights([self.h_dim + 1, y_dim])
 
@@ -125,9 +124,12 @@ class LSTMNetwork(object):
             
             self.outputs[i].ff(concat([unit.h, [[1]]]), self.W['y'])
 
+    def out(self, i):
+        return self.outputs[i].h
+
     def bp(self, dys, learning_rate=0.1):
         d1 = np.zeros([1, self.h_dim]) # h horizontal
-        d3 = np.zeros([1, self.c_dim]) # c
+        d3 = np.zeros([1, self.h_dim]) # c
 
         self.grad = {}
         for key in self.W:
@@ -138,6 +140,8 @@ class LSTMNetwork(object):
 
             out = self.outputs[i]
             d2 = del_last(out.bp(dy, self.W['y']).dx)
+
+            #print('bp for unit {}:\nd1: {}\nd2: {}\nd3: {}\n'.format(i, d1, d2, d3))
 
             unit = self.units[i]
             unit.bp(d1, d2, d3, self.W)
