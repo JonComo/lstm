@@ -134,7 +134,7 @@ class LSTMNetwork(object):
             self.grad[key] = np.zeros_like(self.W[key])
 
         for i in reversed(range(len(dys))):
-            dy = dys[i] # h vertical delta
+            dy = dys[i]
 
             out = self.outputs[i]
             d2 = del_last(out.bp(dy, self.W['y']).dx)
