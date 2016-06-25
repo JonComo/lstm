@@ -40,9 +40,9 @@ class FC(object):
         return self
 
     def bp(self, d, W):
-        self.dz = np.multiply(self.act_p(self.z), d) if self.act_p else d
+        self.dz = m(self.act_p(self.z), d) if self.act_p else d
         self.dx = W.dot(d.T).T
-        self.grad = np.multiply(self.x.T, d)
+        self.grad = m(self.x.T, d)
         return self
 
 class LSTM(object):
@@ -64,8 +64,8 @@ class LSTM(object):
         self.gc.ff(self.hxb, W['c'])
         self.go.ff(self.hxb, W['o'])
         
-        self.c = np.multiply(self.gf.h, self.c0) + np.multiply(self.gi.h, self.gc.h)
-        self.h = np.multiply(self.go.h, tanh(self.c))
+        self.c = m(self.gf.h, self.c0) + m(self.gi.h, self.gc.h)
+        self.h = m(self.go.h, tanh(self.c))
 
     def bp(self, d1, d2, d3, W):
         # see diagram in repo to make sense of these deltas
