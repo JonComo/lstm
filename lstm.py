@@ -68,6 +68,7 @@ class LSTM(object):
         self.h = np.multiply(self.go.h, tanh(self.c))
 
     def bp(self, d1, d2, d3, W):
+        # see diagram in repo to make sense of these deltas
         d4 = d1 + d2
         d5 = m(d4, self.go.h)
         d6 = m(d4, tanh(self.c))
