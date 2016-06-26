@@ -41,8 +41,8 @@ class FC(object):
 
     def bp(self, d, W):
         self.dz = m(self.act_p(self.z), d) if self.act_p else d
-        self.dx = W.dot(d.T).T
-        self.grad = m(self.x.T, d)
+        self.dx = W.dot(self.dz.T).T
+        self.grad = m(self.x.T, self.dz)
         return self
 
 class LSTM(object):
