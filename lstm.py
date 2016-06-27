@@ -2,7 +2,7 @@ import numpy as np
 
 # building blocks
 def weights(shape):
-    return np.random.random_sample(shape) * 2.0 - 1.0
+    return np.random.random_sample(shape) * .2 - .1
 
 def m(a, b):
     return np.multiply(a, b)
